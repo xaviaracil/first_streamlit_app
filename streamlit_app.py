@@ -33,16 +33,13 @@ try:
   if not fruit_choice:
     streamlit.error("Please select a friut to get information.")
   else:
-    streamlit.write('The user entered ', fruit_choice)
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
+    # normalize response
+    fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+    # display response
+    streamlit.dataframe(fruityvice_normalized)
 except URLError as e:
     streamlit.error()
-    
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
-
-# normalize response
-fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
-# display response
-streamlit.dataframe(fruityvice_normalized)
 
 # snowflake
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
